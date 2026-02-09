@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="aiselfhealing_attempt" resource="default" engine="innodb" comment="AI Self-Healing Attempt Log">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="varchar" name="fingerprint" nullable="false" length="64" comment="Error Fingerprint Hash"/>
+        <column xsi:type="text" name="url" nullable="false" comment="Request URL"/>
+        <column xsi:type="text" name="error_message" nullable="false" comment="Error Message"/>
+        <column xsi:type="text" name="error_trace" nullable="true" comment="Error Stack Trace"/>
+        <column xsi:type="mediumtext" name="context_snapshot" nullable="true" comment="Context Snapshot JSON"/>
+        <column xsi:type="mediumtext" name="agent_request" nullable="true" comment="Agent Request JSON"/>
+        <column xsi:type="mediumtext" name="agent_response" nullable="true" comment="Agent Response JSON"/>
+        <column xsi:type="varchar" name="status" nullable="false" length="32" default="pending" comment="Status"/>
+        <column xsi:type="varchar" name="outcome" nullable="true" length="32" comment="Outcome"/>
+        <column xsi:type="int" name="execution_time_ms" padding="10" unsigned="true" nullable="true" comment="Execution Time (ms)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        
+        <index referenceId="AISELFHEALING_ATTEMPT_FINGERPRINT" indexType="btree">
+            <column name="fingerprint"/>
+        </index>
+        <index referenceId="AISELFHEALING_ATTEMPT_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+        <index referenceId="AISELFHEALING_ATTEMPT_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
+    </table>
+</schema>

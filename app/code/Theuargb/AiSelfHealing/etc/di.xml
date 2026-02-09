@@ -16,4 +16,20 @@
                 type="Theuargb\AiSelfHealing\Model\HealingAttemptRepository"/>
     <preference for="Theuargb\AiSelfHealing\Api\Data\HealingAttemptInterface"
                 type="Theuargb\AiSelfHealing\Model\HealingAttempt"/>
+
+    <!-- UI Component Data Provider -->
+    <virtualType name="Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">aiselfhealing_attempt</argument>
+            <argument name="resourceModel" xsi:type="string">Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt</argument>
+        </arguments>
+    </virtualType>
+    
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="aiselfhealing_healinglog_listing_data_source" xsi:type="string">Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

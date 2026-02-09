@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="theuargb" translate="label" sortOrder="900">
+            <label>Theuargb</label>
+        </tab>
+        <section id="ai_self_healing" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>AI Self-Healing</label>
+            <tab>theuargb</tab>
+            <resource>Theuargb_AiSelfHealing::config</resource>
+            
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable AI Self-Healing</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="mode" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Mode</label>
+                    <source_model>Theuargb\AiSelfHealing\Model\Config\Source\Mode</source_model>
+                    <comment>monitor_only: Log errors without healing. auto_heal: Attempt to fix errors automatically.</comment>
+                </field>
+            </group>
+            
+            <group id="agent" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>AI Agent Settings</label>
+                <field id="endpoint_url" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Agent Endpoint URL</label>
+                    <comment>URL of the Python AI agent service (e.g., http://localhost:8100)</comment>
+                </field>
+                <field id="heal_timeout_seconds" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Heal Timeout (seconds)</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+                <field id="fallback_timeout_seconds" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Fallback Timeout (seconds)</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+                <field id="max_tool_calls" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Tool Calls</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+            </group>
+            
+            <group id="url_filters" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>URL Filters</label>
+                <field id="strategy" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Intercept Strategy</label>
+                    <source_model>Theuargb\AiSelfHealing\Model\Config\Source\Strategy</source_model>
+                </field>
+                <field id="patterns" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>URL Patterns to Include</label>
+                    <comment>One pattern per line. Supports wildcards (*). Only used when strategy is "patterns".</comment>
+                </field>
+                <field id="exclude_patterns" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>URL Patterns to Exclude</label>
+                    <comment>One pattern per line. Supports wildcards (*). These are always excluded regardless of strategy.</comment>
+                </field>
+            </group>
+            
+            <group id="response_rewrite" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Response Rewriting</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Response Rewriting</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, the AI can rewrite the response HTML instead of showing an error.</comment>
+                </field>
+                <field id="allowed_url_patterns" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed URL Patterns</label>
+                    <comment>One pattern per line. If empty, all URLs are allowed.</comment>
+                </field>
+                <field id="http_status_code" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>HTTP Status Code</label>
+                    <validate>validate-number</validate>
+                </field>
+            </group>
+            
+            <group id="snapshot" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Homepage Snapshot</label>
+                <field id="cron_frequency" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cron Frequency</label>
+                    <source_model>Theuargb\AiSelfHealing\Model\Config\Source\CronFrequency</source_model>
+                </field>
+                <field id="cron_expression" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Cron Expression</label>
+                    <comment>Only used when frequency is set to "custom"</comment>
+                </field>
+            </group>
+            
+            <group id="safety" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Safety Settings</label>
+                <field id="max_attempts_per_fingerprint_per_hour" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Attempts Per Fingerprint Per Hour</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+                <field id="max_concurrent_healings" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Concurrent Healings</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                </field>
+                <field id="disallowed_tool_actions" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Disallowed Tool Actions</label>
+                    <comment>Comma-separated list of tool actions the AI is not allowed to perform.</comment>
+                </field>
+                <field id="readonly_mode" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Read-Only Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, the AI can only read data, not modify anything.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -48,20 +48,5 @@
         </index>
     </table>
 
-    <table name="steroids_homepage_snapshot" resource="default" engine="innodb" comment="Homepage Snapshot Storage">
-        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
-        <column xsi:type="int" name="store_id" padding="5" unsigned="true" nullable="false" comment="Store ID"/>
-        <column xsi:type="text" name="base_url" nullable="false" comment="Base URL"/>
-        <column xsi:type="mediumtext" name="full_html" nullable="true" comment="Full HTML"/>
-        <column xsi:type="mediumtext" name="inlined_css" nullable="true" comment="Inlined CSS"/>
-        <column xsi:type="int" name="http_status_code" padding="5" unsigned="true" nullable="true" comment="HTTP Status Code"/>
-        <column xsi:type="timestamp" name="captured_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Captured At"/>
 
-        <constraint xsi:type="primary" referenceId="PRIMARY">
-            <column name="entity_id"/>
-        </constraint>
-        <index referenceId="STEROIDS_SNAPSHOT_STORE_ID" indexType="btree">
-            <column name="store_id"/>
-        </index>
-    </table>
 </schema>

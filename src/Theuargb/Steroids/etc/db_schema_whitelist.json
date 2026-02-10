@@ -38,22 +38,5 @@
         "constraint": {
             "PRIMARY": true
         }
-    },
-    "steroids_homepage_snapshot": {
-        "column": {
-            "entity_id": true,
-            "store_id": true,
-            "base_url": true,
-            "full_html": true,
-            "inlined_css": true,
-            "http_status_code": true,
-            "captured_at": true
-        },
-        "index": {
-            "STEROIDS_SNAPSHOT_STORE_ID": true
-        },
-        "constraint": {
-            "PRIMARY": true
-        }
     }
 }

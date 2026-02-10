@@ -20,7 +20,6 @@ class HealingOrchestrator
         private readonly UrlFilterMatcher $urlFilter,
         private readonly ContextCollector $contextCollector,
         private readonly AgentClientInterface $agentClient,
-        private readonly HomepageSnapshotManager $snapshotManager,
         private readonly FallbackResponseBuilder $fallbackBuilder,
         private readonly FallbackCache $fallbackCache,
         private readonly RequestRedispatcher $redispatcher,
@@ -152,11 +151,10 @@ class HealingOrchestrator
                 }
 
                 // Generate fresh fallback via AI agent
-                $snapshot = $this->snapshotManager->getLatestSnapshot();
+                $designContext = $this->config->getDesignJson();
                 $fallbackResult = $this->agentClient->requestFallbackHtml(
                     context: $context,
-                    homepageHtml: $snapshot?->getFullHtml() ?? '',
-                    homepageCss: $snapshot?->getInlinedCss() ?? '',
+                    designContext: $designContext,
                     fallbackPrompt: $context['fallback_prompt'] ?? null,
                     timeout: $this->config->getFallbackTimeout()
                 );
@@ -171,7 +169,7 @@ class HealingOrchestrator
                     $attempt->setOutcome('fallback_html');
                     $attempt->setFallbackHtmlReturned($fallbackResult->getHtml());
                     $attempt->setOutcomeDetail(
-                        $snapshot 
+                        !empty($designContext)
                             ? 'Served AI-generated fallback page with design reference'
                             : 'Served AI-generated fallback page (no design reference)'
                     );

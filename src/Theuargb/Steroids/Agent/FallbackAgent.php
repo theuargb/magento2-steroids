@@ -10,14 +10,16 @@ use NeuronAI\Providers\OpenAI\OpenAI;
 use NeuronAI\Providers\OpenAILike;
 use NeuronAI\Providers\Anthropic\Anthropic;
 use NeuronAI\SystemPrompt;
+use Theuargb\Steroids\Agent\Provider\OpenAIRealtime\OpenAIRealtimeProvider;
 use NeuronAI\Chat\Messages\UserMessage;
 use Theuargb\Steroids\Agent\Result\FallbackResult;
 
 /**
  * Generates design-matched fallback HTML when healing fails.
  *
- * Uses the homepage snapshot (HTML + CSS) as a design reference
- * so the error page matches the site's branding.
+ * Uses free-form design JSON from admin config — the admin generates this
+ * by screenshotting their homepage and asking ChatGPT for a design description.
+ * Any JSON shape is accepted — the AI interprets it to match the store's branding.
  */
 class FallbackAgent extends Agent
 {
@@ -48,6 +50,13 @@ class FallbackAgent extends Agent
             );
         }
 
+        if ($this->llmProvider === 'openai_realtime') {
+            return new OpenAIRealtimeProvider(
+                key: $this->llmApiKey,
+                model: $this->llmModel,
+            );
+        }
+
         if (!empty($this->llmBaseUrl)) {
             return new OpenAILike(
                 baseUri: $this->llmBaseUrl,
@@ -70,13 +79,17 @@ class FallbackAgent extends Agent
                 'When the real Magento controller throws an exception, you generate the HTTP response the user should see.',
                 'This response is served directly to the browser as-is — you control status code, headers, and body.',
                 'You can return full HTML pages, redirects (301/302), 404 pages, or any valid HTTP response.',
+                'You receive a free-form design JSON describing the store\'s visual identity — it may include store name, fonts, colors, logos, layout notes, or any other design details.',
+                'Interpret whatever design information is provided to produce HTML that matches the store\'s branding as closely as possible.',
             ],
             steps: [
                 'Analyze the error context and admin instructions to determine the appropriate response type.',
-                'For user-facing pages: generate design-matched HTML using the provided homepage reference.',
+                'For user-facing pages: generate design-matched HTML using the provided design JSON (fonts, colors, store name, logo, layout notes, etc.).',
+                'Import any fonts specified in the design JSON via @import or <link> tags.',
+                'Apply the color scheme from the design JSON for backgrounds, text, accents, etc.',
                 'For redirects: return 301/302 with Location header.',
-                'For missing resources: return 404 with helpful HTML.',
-                'Match the site branding and maintain a professional user experience.',
+                'For missing resources: return 404 with helpful branded HTML.',
+                'Include the store name (if provided in design JSON) in the page title and any visible headers.',
             ],
             output: [
                 'Return a JSON object with this exact structure:',
@@ -93,12 +106,13 @@ class FallbackAgent extends Agent
 
     /**
      * Generate fallback HTTP response for the given context.
+     *
+     * Uses free-form design JSON from admin config to match store branding.
      */
     public function generateFallback(
         string $url,
         string $errorContext,
-        string $homepageHtml,
-        string $homepageCss,
+        array $designContext,
         ?string $fallbackPrompt = null
     ): FallbackResult {
         $adminInstructions = '';
@@ -112,30 +126,7 @@ class FallbackAgent extends Agent
 ADMIN;
         }
 
-        $designReference = '';
-        if (!empty($homepageHtml) || !empty($homepageCss)) {
-            $designReference = "\n";
-            if (!empty($homepageHtml)) {
-                $designReference .= <<<HTML
-Use this homepage HTML as design reference:
-<homepage>
-{$homepageHtml}
-</homepage>
-
-HTML;
-            }
-            if (!empty($homepageCss)) {
-                $designReference .= <<<CSS
-Use this CSS for styling:
-<css>
-{$homepageCss}
-</css>
-
-CSS;
-            }
-        } else {
-            $designReference = "\nNo design reference available — generate a clean, professional error page that matches modern web standards.\n";
-        }
+        $designReference = $this->buildDesignPrompt($designContext);
 
         $prompt = <<<PROMPT
 {$adminInstructions}Generate an appropriate HTTP response for the following situation:
@@ -158,7 +149,6 @@ PROMPT;
             $parsed = json_decode($content, true);
 
             if (is_array($parsed) && isset($parsed['status']) && array_key_exists('body', $parsed)) {
-                // Valid structured response (body may be empty for redirects)
                 return new FallbackResult(
                     hasHtml: !empty($parsed['body']),
                     html: $parsed['body'] ?? '',
@@ -168,7 +158,7 @@ PROMPT;
                 );
             }
 
-            // Fallback: treat as raw HTML (backward compat)
+            // Fallback: treat as raw HTML
             return new FallbackResult(
                 hasHtml: !empty(trim($content)),
                 html: $content,
@@ -183,5 +173,29 @@ PROMPT;
                 headers: []
             );
         }
+    }
+
+    /**
+     * Build the design reference section of the prompt from free-form design JSON.
+     *
+     * The JSON shape is intentionally unstructured — the admin generates it
+     * from a page screenshot via ChatGPT. We serialize it as-is for the LLM.
+     */
+    private function buildDesignPrompt(array $designContext): string
+    {
+        if (empty($designContext)) {
+            return "\nNo design reference available — generate a clean, professional error page that matches modern web standards.\n";
+        }
+
+        $json = json_encode($designContext, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return <<<DESIGN
+
+=== STORE DESIGN (from admin config) ===
+{$json}
+=== END STORE DESIGN ===
+
+Use the above design description to match the store's branding: fonts, colors, logo, layout style, etc.
+DESIGN;
     }
 }

@@ -10,6 +10,7 @@ use NeuronAI\Providers\OpenAI\OpenAI;
 use NeuronAI\Providers\OpenAILike;
 use NeuronAI\Providers\Anthropic\Anthropic;
 use NeuronAI\SystemPrompt;
+use Theuargb\Steroids\Agent\Provider\OpenAIRealtime\OpenAIRealtimeProvider;
 use NeuronAI\Chat\Messages\UserMessage;
 use Theuargb\Steroids\Agent\Tool\EvalPhpTool;
 use Theuargb\Steroids\Agent\Tool\ReadFileTool;
@@ -64,6 +65,13 @@ class HealerAgent extends Agent
     {
         if ($this->llmProvider === 'anthropic') {
             return new Anthropic(
+                key: $this->llmApiKey,
+                model: $this->llmModel,
+            );
+        }
+
+        if ($this->llmProvider === 'openai_realtime') {
+            return new OpenAIRealtimeProvider(
                 key: $this->llmApiKey,
                 model: $this->llmModel,
             );

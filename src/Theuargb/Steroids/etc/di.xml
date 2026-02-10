@@ -16,8 +16,6 @@
                 type="Theuargb\Steroids\Model\HealingAttemptRepository"/>
     <preference for="Theuargb\Steroids\Api\Data\HealingAttemptInterface"
                 type="Theuargb\Steroids\Model\HealingAttempt"/>
-    <preference for="Theuargb\Steroids\Api\Data\HomepageSnapshotInterface"
-                type="Theuargb\Steroids\Model\HomepageSnapshot"/>
 
     <!-- UI Component Data Provider for Healing Log grid -->
     <virtualType name="Theuargb\Steroids\Model\ResourceModel\HealingAttempt\Grid\Collection"
@@ -62,11 +60,6 @@
         </arguments>
     </type>
     <type name="Theuargb\Steroids\Model\AgentClient">
-        <arguments>
-            <argument name="logger" xsi:type="object">Theuargb\Steroids\Logger\Logger</argument>
-        </arguments>
-    </type>
-    <type name="Theuargb\Steroids\Model\HomepageSnapshotManager">
         <arguments>
             <argument name="logger" xsi:type="object">Theuargb\Steroids\Logger\Logger</argument>
         </arguments>

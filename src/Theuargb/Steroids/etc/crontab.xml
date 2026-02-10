@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
-    <group id="default">
-        <job name="steroids_capture_homepage_snapshot"
-             instance="Theuargb\Steroids\Cron\CaptureHomepageSnapshot"
-             method="execute">
-            <config_path>steroids/snapshot/cron_expression</config_path>
-        </job>
-    </group>
+    <!-- No cron jobs required — design tokens are configured via admin JSON input -->
 </config>

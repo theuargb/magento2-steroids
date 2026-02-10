@@ -101,8 +101,7 @@ class AgentClient implements AgentClientInterface
      */
     public function requestFallbackHtml(
         array $context,
-        string $homepageHtml,
-        string $homepageCss,
+        array $designContext,
         ?string $fallbackPrompt,
         int $timeout
     ): FallbackResult {
@@ -128,8 +127,7 @@ class AgentClient implements AgentClientInterface
             return $agent->generateFallback(
                 url: $context['request']['uri'] ?? '/',
                 errorContext: $safeErrorContext,
-                homepageHtml: $homepageHtml,
-                homepageCss: $homepageCss,
+                designContext: $designContext,
                 fallbackPrompt: $fallbackPrompt
             );
         } catch (\Throwable $e) {

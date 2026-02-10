@@ -21,10 +21,9 @@
             <url_filters>
                 <!-- URL rules configured via dynamic rows in admin. Empty by default. -->
             </url_filters>
-            <snapshot>
-                <cron_frequency>every_6h</cron_frequency>
-                <cron_expression>0 */6 * * *</cron_expression>
-            </snapshot>
+            <design>
+                <design_json/>
+            </design>
             <safety>
                 <max_attempts_per_fingerprint_per_hour>3</max_attempts_per_fingerprint_per_hour>
                 <max_concurrent_healings>2</max_concurrent_healings>

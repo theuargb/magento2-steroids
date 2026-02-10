@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Theuargb\Steroids\Model;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\App\DeploymentConfig;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -21,7 +23,8 @@ class ContextCollector
         private readonly ProductMetadataInterface $productMetadata,
         private readonly ModuleListInterface $moduleList,
         private readonly DeploymentConfig $deploymentConfig,
-        private readonly StoreManagerInterface $storeManager
+        private readonly StoreManagerInterface $storeManager,
+        private readonly ScopeConfigInterface $scopeConfig
     ) {}
 
     /**
@@ -52,6 +55,8 @@ class ContextCollector
             'store' => [
                 'id' => $this->storeManager->getStore()->getId(),
                 'code' => $this->storeManager->getStore()->getCode(),
+                'name' => $this->getShopName(),
+                'base_url' => $this->storeManager->getStore()->getBaseUrl(),
             ],
             'exception' => [
                 'class' => get_class($e),
@@ -139,5 +144,21 @@ class ContextCollector
             }
         }
         return $params;
+    }
+
+    /**
+     * Get the real shop name from Stores > Configuration > General > Store Information.
+     * Falls back to the store view name if not configured.
+     */
+    private function getShopName(): string
+    {
+        $name = (string) $this->scopeConfig->getValue(
+            'general/store_information/name',
+            ScopeInterface::SCOPE_STORE
+        );
+
+        return !empty($name)
+            ? $name
+            : (string) $this->storeManager->getStore()->getName();
     }
 }

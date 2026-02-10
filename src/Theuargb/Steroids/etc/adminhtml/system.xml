@@ -25,7 +25,7 @@
                 <field id="provider" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>LLM Provider</label>
                     <source_model>Theuargb\Steroids\Model\Config\Source\LlmProvider</source_model>
-                    <comment>Select the AI provider. Use "OpenAI-Compatible" for self-hosted or proxy endpoints.</comment>
+                    <comment>Select the AI provider. "OpenAI Realtime" uses WebSocket for lower-latency inference. Use "OpenAI-Compatible" for self-hosted or proxy endpoints.</comment>
                 </field>
                 <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API Key</label>
@@ -34,7 +34,7 @@
                 </field>
                 <field id="model" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Model</label>
-                    <comment>Model name, e.g. gpt-4o, claude-sonnet-4-20250514, etc.</comment>
+                    <comment>Model name, e.g. gpt-4o, claude-sonnet-4-20250514, gpt-4o-realtime-preview, etc.</comment>
                 </field>
                 <field id="base_url" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Custom Base URL (optional)</label>
@@ -71,7 +71,7 @@
             <group id="url_filters" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>URL Rules</label>
                 <field id="url_rules" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>URL Matching Rules (first-match)</label>
+                    <label></label>
                     <frontend_model>Theuargb\Steroids\Block\Adminhtml\System\Config\UrlRules</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                     <comment><![CDATA[
@@ -88,22 +88,30 @@
                 </field>
             </group>
 
-            <!-- Homepage Snapshot -->
-            <group id="snapshot" translate="label" sortOrder="50" showInDefault="1">
-                <label>Homepage Snapshot</label>
-                <field id="cron_frequency" translate="label" type="select" sortOrder="10" showInDefault="1">
-                    <label>Snapshot Frequency</label>
-                    <source_model>Theuargb\Steroids\Model\Config\Source\SnapshotFrequency</source_model>
-                    <backend_model>Theuargb\Steroids\Model\Config\Backend\SnapshotCron</backend_model>
-                    <comment>How often to capture a snapshot of the homepage for fallback reference.</comment>
-                </field>
-                <field id="cron_expression" translate="label comment" type="text" sortOrder="15" showInDefault="1">
-                    <label>Custom Cron Expression</label>
-                    <comment>Only used when frequency is set to "custom".</comment>
-                </field>
-                <field id="capture_now" translate="label" type="button" sortOrder="20" showInDefault="1">
-                    <label>Capture Snapshot Now</label>
-                    <frontend_model>Theuargb\Steroids\Block\Adminhtml\System\Config\CaptureButton</frontend_model>
+            <!-- Design JSON -->
+            <group id="design" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Fallback Page Design</label>
+                <field id="design_json" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Design JSON</label>
+                    <comment><![CDATA[
+                        Free-form JSON describing the store's visual design for fallback pages.<br/>
+                        Generate this by taking a screenshot of your homepage and asking ChatGPT to extract a design description as JSON.<br/>
+                        Example structure (any shape is accepted — the AI will interpret it):<br/>
+                        <pre>{
+  "store_name": "My Store",
+  "logo_url": "https://example.com/logo.svg",
+  "fonts": [
+    {"family": "Inter", "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700"}
+  ],
+  "colors": {
+    "primary": "#2563EB",
+    "background": "#FFFFFF",
+    "text": "#1F2937",
+    "accent": "#F59E0B"
+  },
+  "style_notes": "Modern, clean, rounded corners, subtle shadows"
+}</pre>
+                    ]]></comment>
                 </field>
             </group>
 

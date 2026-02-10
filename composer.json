@@ -19,5 +19,16 @@
         "psr-4": {
             "Theuargb\\Steroids\\": "src/Theuargb/Steroids"
         }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "magento/composer-dependency-version-audit-plugin": true
+        }
     }
 }

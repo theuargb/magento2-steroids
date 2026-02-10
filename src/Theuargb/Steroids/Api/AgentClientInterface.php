@@ -22,16 +22,14 @@ interface AgentClientInterface
      * Generate fallback HTML when healing fails.
      *
      * @param array $context Exception context payload
-     * @param string $homepageHtml Full homepage HTML for design reference
-     * @param string $homepageCss Inlined CSS for styling
+     * @param array $designContext Free-form design JSON from admin config
      * @param string|null $fallbackPrompt Admin instructions for fallback agent
      * @param int $timeout Timeout in seconds
      * @return FallbackResult
      */
     public function requestFallbackHtml(
         array $context,
-        string $homepageHtml,
-        string $homepageCss,
+        array $designContext,
         ?string $fallbackPrompt,
         int $timeout
     ): FallbackResult;

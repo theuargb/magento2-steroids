@@ -12,6 +12,7 @@ class LlmProvider implements OptionSourceInterface
     {
         return [
             ['value' => 'openai', 'label' => __('OpenAI')],
+            ['value' => 'openai_realtime', 'label' => __('OpenAI Realtime (WebSocket)')],
             ['value' => 'anthropic', 'label' => __('Anthropic')],
             ['value' => 'openai_compatible', 'label' => __('OpenAI-Compatible (custom base URL)')],
         ];

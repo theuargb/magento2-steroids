@@ -37,7 +37,7 @@ class HealingAttemptRepository implements HealingAttemptRepositoryInterface
         return $healingAttempt;
     }
 
-    public function getById(int $entityId): HealingAttemptInterface
+    public function getById($entityId): HealingAttemptInterface
     {
         $healingAttempt = $this->healingAttemptFactory->create();
         $this->resource->load($healingAttempt, $entityId);

@@ -7,10 +7,15 @@
                 <enabled>0</enabled>
                 <mode>monitor_only</mode>
             </general>
+            <llm>
+                <provider>openai</provider>
+                <api_key/>
+                <model>gpt-4o</model>
+                <base_url/>
+            </llm>
             <agent>
-                <endpoint_url>http://localhost:8100</endpoint_url>
-                <heal_timeout_seconds>12</heal_timeout_seconds>
-                <fallback_timeout_seconds>8</fallback_timeout_seconds>
+                <heal_timeout_seconds>30</heal_timeout_seconds>
+                <fallback_timeout_seconds>15</fallback_timeout_seconds>
                 <max_tool_calls>10</max_tool_calls>
             </agent>
             <url_filters>
@@ -25,6 +30,7 @@
             </response_rewrite>
             <snapshot>
                 <cron_frequency>every_6h</cron_frequency>
+                <cron_expression>0 */6 * * *</cron_expression>
             </snapshot>
             <safety>
                 <max_attempts_per_fingerprint_per_hour>3</max_attempts_per_fingerprint_per_hour>

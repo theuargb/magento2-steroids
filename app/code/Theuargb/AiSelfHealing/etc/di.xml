@@ -6,7 +6,7 @@
     <type name="Magento\Framework\App\Http">
         <plugin name="theuargb_aiselfhealing_intercept"
                 type="Theuargb\AiSelfHealing\Plugin\AppHttpPlugin"
-                sortOrder="1"/>    
+                sortOrder="1"/>
     </type>
 
     <!-- Interface preferences -->
@@ -16,20 +16,59 @@
                 type="Theuargb\AiSelfHealing\Model\HealingAttemptRepository"/>
     <preference for="Theuargb\AiSelfHealing\Api\Data\HealingAttemptInterface"
                 type="Theuargb\AiSelfHealing\Model\HealingAttempt"/>
+    <preference for="Theuargb\AiSelfHealing\Api\Data\HomepageSnapshotInterface"
+                type="Theuargb\AiSelfHealing\Model\HomepageSnapshot"/>
 
-    <!-- UI Component Data Provider -->
-    <virtualType name="Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <!-- UI Component Data Provider for Healing Log grid -->
+    <virtualType name="Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt\Grid\Collection"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">aiselfhealing_attempt</argument>
             <argument name="resourceModel" xsi:type="string">Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt</argument>
         </arguments>
     </virtualType>
-    
+
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
                 <item name="aiselfhealing_healinglog_listing_data_source" xsi:type="string">Theuargb\AiSelfHealing\Model\ResourceModel\HealingAttempt\Grid\Collection</item>
             </argument>
+        </arguments>
+    </type>
+
+    <!-- Virtual type for dedicated logger -->
+    <virtualType name="Theuargb\AiSelfHealing\Logger\Handler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/aiselfhealing.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Theuargb\AiSelfHealing\Logger\Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">Theuargb\AiSelfHealing\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Inject dedicated logger into orchestrator components -->
+    <type name="Theuargb\AiSelfHealing\Model\HealingOrchestrator">
+        <arguments>
+            <argument name="logger" xsi:type="object">Theuargb\AiSelfHealing\Logger\Logger</argument>
+        </arguments>
+    </type>
+    <type name="Theuargb\AiSelfHealing\Plugin\AppHttpPlugin">
+        <arguments>
+            <argument name="logger" xsi:type="object">Theuargb\AiSelfHealing\Logger\Logger</argument>
+        </arguments>
+    </type>
+    <type name="Theuargb\AiSelfHealing\Model\AgentClient">
+        <arguments>
+            <argument name="logger" xsi:type="object">Theuargb\AiSelfHealing\Logger\Logger</argument>
+        </arguments>
+    </type>
+    <type name="Theuargb\AiSelfHealing\Model\HomepageSnapshotManager">
+        <arguments>
+            <argument name="logger" xsi:type="object">Theuargb\AiSelfHealing\Logger\Logger</argument>
         </arguments>
     </type>
 </config>

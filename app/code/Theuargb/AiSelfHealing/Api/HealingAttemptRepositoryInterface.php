@@ -22,7 +22,7 @@ interface HealingAttemptRepositoryInterface
      * @param int $entityId
      * @return HealingAttemptInterface
      */
-    public function getById(int $entityId): HealingAttemptInterface;
+    public function getById($entityId): HealingAttemptInterface;
 
     /**
      * Delete healing attempt

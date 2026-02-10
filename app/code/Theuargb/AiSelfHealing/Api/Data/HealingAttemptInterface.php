@@ -9,209 +9,163 @@ interface HealingAttemptInterface
     public const ENTITY_ID = 'entity_id';
     public const FINGERPRINT = 'fingerprint';
     public const URL = 'url';
+    public const REQUEST_METHOD = 'request_method';
+    public const EXCEPTION_CLASS = 'exception_class';
     public const ERROR_MESSAGE = 'error_message';
+    public const EXCEPTION_FILE = 'exception_file';
+    public const EXCEPTION_LINE = 'exception_line';
     public const ERROR_TRACE = 'error_trace';
     public const CONTEXT_SNAPSHOT = 'context_snapshot';
+    public const URL_RULE_PROMPT = 'url_rule_prompt';
     public const AGENT_REQUEST = 'agent_request';
     public const AGENT_RESPONSE = 'agent_response';
+    public const AGENT_REASONING_LOG = 'agent_reasoning_log';
+    public const AGENT_ACTIONS_TAKEN_JSON = 'agent_actions_taken_json';
+    public const AGENT_TOOL_CALLS_COUNT = 'agent_tool_calls_count';
+    public const LLM_MODEL_USED = 'llm_model_used';
+    public const LLM_TOKENS_USED = 'llm_tokens_used';
     public const STATUS = 'status';
     public const OUTCOME = 'outcome';
+    public const OUTCOME_DETAIL = 'outcome_detail';
+    public const HEALED_DIFF = 'healed_diff';
+    public const FALLBACK_HTML_RETURNED = 'fallback_html_returned';
     public const EXECUTION_TIME_MS = 'execution_time_ms';
+    public const AGENT_DURATION_SECONDS = 'agent_duration_seconds';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
 
-    /**
-     * Get entity ID
-     *
-     * @return int|null
-     */
-    public function getEntityId(): ?int;
+    /** @return int|null */
+    public function getEntityId();
+    /** @param int $entityId @return $this */
+    public function setEntityId($entityId);
 
-    /**
-     * Set entity ID
-     *
-     * @param int $entityId
-     * @return $this
-     */
-    public function setEntityId(int $entityId): self;
-
-    /**
-     * Get fingerprint
-     *
-     * @return string|null
-     */
+    /** @return string|null */
     public function getFingerprint(): ?string;
-
-    /**
-     * Set fingerprint
-     *
-     * @param string $fingerprint
-     * @return $this
-     */
+    /** @param string $fingerprint @return $this */
     public function setFingerprint(string $fingerprint): self;
 
-    /**
-     * Get URL
-     *
-     * @return string|null
-     */
+    /** @return string|null */
     public function getUrl(): ?string;
-
-    /**
-     * Set URL
-     *
-     * @param string $url
-     * @return $this
-     */
+    /** @param string $url @return $this */
     public function setUrl(string $url): self;
 
-    /**
-     * Get error message
-     *
-     * @return string|null
-     */
-    public function getErrorMessage(): ?string;
+    /** @return string|null */
+    public function getRequestMethod(): ?string;
+    /** @param string $method @return $this */
+    public function setRequestMethod(string $method): self;
 
-    /**
-     * Set error message
-     *
-     * @param string $errorMessage
-     * @return $this
-     */
+    /** @return string|null */
+    public function getExceptionClass(): ?string;
+    /** @param string $class @return $this */
+    public function setExceptionClass(string $class): self;
+
+    /** @return string|null */
+    public function getErrorMessage(): ?string;
+    /** @param string $errorMessage @return $this */
     public function setErrorMessage(string $errorMessage): self;
 
-    /**
-     * Get error trace
-     *
-     * @return string|null
-     */
-    public function getErrorTrace(): ?string;
+    /** @return string|null */
+    public function getExceptionFile(): ?string;
+    /** @param string $file @return $this */
+    public function setExceptionFile(string $file): self;
 
-    /**
-     * Set error trace
-     *
-     * @param string $errorTrace
-     * @return $this
-     */
+    /** @return int|null */
+    public function getExceptionLine(): ?int;
+    /** @param int $line @return $this */
+    public function setExceptionLine(int $line): self;
+
+    /** @return string|null */
+    public function getErrorTrace(): ?string;
+    /** @param string $errorTrace @return $this */
     public function setErrorTrace(string $errorTrace): self;
 
-    /**
-     * Get context snapshot
-     *
-     * @return string|null
-     */
+    /** @return string|null */
     public function getContextSnapshot(): ?string;
-
-    /**
-     * Set context snapshot
-     *
-     * @param string $contextSnapshot
-     * @return $this
-     */
+    /** @param string $contextSnapshot @return $this */
     public function setContextSnapshot(string $contextSnapshot): self;
 
-    /**
-     * Get agent request
-     *
-     * @return string|null
-     */
-    public function getAgentRequest(): ?string;
+    /** @return string|null */
+    public function getUrlRulePrompt(): ?string;
+    /** @param string|null $prompt @return $this */
+    public function setUrlRulePrompt(?string $prompt): self;
 
-    /**
-     * Set agent request
-     *
-     * @param string $agentRequest
-     * @return $this
-     */
+    /** @return string|null */
+    public function getAgentRequest(): ?string;
+    /** @param string $agentRequest @return $this */
     public function setAgentRequest(string $agentRequest): self;
 
-    /**
-     * Get agent response
-     *
-     * @return string|null
-     */
+    /** @return string|null */
     public function getAgentResponse(): ?string;
-
-    /**
-     * Set agent response
-     *
-     * @param string $agentResponse
-     * @return $this
-     */
+    /** @param string $agentResponse @return $this */
     public function setAgentResponse(string $agentResponse): self;
 
-    /**
-     * Get status
-     *
-     * @return string|null
-     */
-    public function getStatus(): ?string;
+    /** @return string|null */
+    public function getAgentReasoningLog(): ?string;
+    /** @param string|null $log @return $this */
+    public function setAgentReasoningLog(?string $log): self;
 
-    /**
-     * Set status
-     *
-     * @param string $status
-     * @return $this
-     */
+    /** @return string|null */
+    public function getAgentActionsTakenJson(): ?string;
+    /** @param string|null $json @return $this */
+    public function setAgentActionsTakenJson(?string $json): self;
+
+    /** @return int|null */
+    public function getAgentToolCallsCount(): ?int;
+    /** @param int|null $count @return $this */
+    public function setAgentToolCallsCount(?int $count): self;
+
+    /** @return string|null */
+    public function getLlmModelUsed(): ?string;
+    /** @param string|null $model @return $this */
+    public function setLlmModelUsed(?string $model): self;
+
+    /** @return int|null */
+    public function getLlmTokensUsed(): ?int;
+    /** @param int|null $tokens @return $this */
+    public function setLlmTokensUsed(?int $tokens): self;
+
+    /** @return string|null */
+    public function getStatus(): ?string;
+    /** @param string $status @return $this */
     public function setStatus(string $status): self;
 
-    /**
-     * Get outcome
-     *
-     * @return string|null
-     */
+    /** @return string|null */
     public function getOutcome(): ?string;
-
-    /**
-     * Set outcome
-     *
-     * @param string $outcome
-     * @return $this
-     */
+    /** @param string $outcome @return $this */
     public function setOutcome(string $outcome): self;
 
-    /**
-     * Get execution time in milliseconds
-     *
-     * @return int|null
-     */
-    public function getExecutionTimeMs(): ?int;
+    /** @return string|null */
+    public function getOutcomeDetail(): ?string;
+    /** @param string|null $detail @return $this */
+    public function setOutcomeDetail(?string $detail): self;
 
-    /**
-     * Set execution time in milliseconds
-     *
-     * @param int $executionTimeMs
-     * @return $this
-     */
+    /** @return string|null */
+    public function getHealedDiff(): ?string;
+    /** @param string|null $diff @return $this */
+    public function setHealedDiff(?string $diff): self;
+
+    /** @return string|null */
+    public function getFallbackHtmlReturned(): ?string;
+    /** @param string|null $html @return $this */
+    public function setFallbackHtmlReturned(?string $html): self;
+
+    /** @return int|null */
+    public function getExecutionTimeMs(): ?int;
+    /** @param int $executionTimeMs @return $this */
     public function setExecutionTimeMs(int $executionTimeMs): self;
 
-    /**
-     * Get created at
-     *
-     * @return string|null
-     */
-    public function getCreatedAt(): ?string;
+    /** @return float|null */
+    public function getAgentDurationSeconds(): ?float;
+    /** @param float|null $seconds @return $this */
+    public function setAgentDurationSeconds(?float $seconds): self;
 
-    /**
-     * Set created at
-     *
-     * @param string $createdAt
-     * @return $this
-     */
+    /** @return string|null */
+    public function getCreatedAt(): ?string;
+    /** @param string $createdAt @return $this */
     public function setCreatedAt(string $createdAt): self;
 
-    /**
-     * Get updated at
-     *
-     * @return string|null
-     */
+    /** @return string|null */
     public function getUpdatedAt(): ?string;
-
-    /**
-     * Set updated at
-     *
-     * @param string $updatedAt
-     * @return $this
-     */
+    /** @param string $updatedAt @return $this */
     public function setUpdatedAt(string $updatedAt): self;
 }

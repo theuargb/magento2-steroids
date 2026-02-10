@@ -5,29 +5,63 @@
         <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
         <column xsi:type="varchar" name="fingerprint" nullable="false" length="64" comment="Error Fingerprint Hash"/>
         <column xsi:type="text" name="url" nullable="false" comment="Request URL"/>
+        <column xsi:type="varchar" name="request_method" nullable="true" length="10" comment="HTTP Method"/>
+        <column xsi:type="varchar" name="exception_class" nullable="true" length="255" comment="Exception Class"/>
         <column xsi:type="text" name="error_message" nullable="false" comment="Error Message"/>
+        <column xsi:type="varchar" name="exception_file" nullable="true" length="512" comment="Exception File"/>
+        <column xsi:type="int" name="exception_line" padding="10" unsigned="true" nullable="true" comment="Exception Line"/>
         <column xsi:type="text" name="error_trace" nullable="true" comment="Error Stack Trace"/>
         <column xsi:type="mediumtext" name="context_snapshot" nullable="true" comment="Context Snapshot JSON"/>
+        <column xsi:type="text" name="url_rule_prompt" nullable="true" comment="User-defined URL Rule Prompt"/>
         <column xsi:type="mediumtext" name="agent_request" nullable="true" comment="Agent Request JSON"/>
         <column xsi:type="mediumtext" name="agent_response" nullable="true" comment="Agent Response JSON"/>
+        <column xsi:type="mediumtext" name="agent_reasoning_log" nullable="true" comment="Agent Reasoning Log"/>
+        <column xsi:type="mediumtext" name="agent_actions_taken_json" nullable="true" comment="Agent Actions Taken JSON"/>
+        <column xsi:type="int" name="agent_tool_calls_count" padding="10" unsigned="true" nullable="true" default="0" comment="Tool Calls Count"/>
+        <column xsi:type="varchar" name="llm_model_used" nullable="true" length="128" comment="LLM Model Used"/>
+        <column xsi:type="int" name="llm_tokens_used" padding="10" unsigned="true" nullable="true" default="0" comment="LLM Tokens Used"/>
         <column xsi:type="varchar" name="status" nullable="false" length="32" default="pending" comment="Status"/>
         <column xsi:type="varchar" name="outcome" nullable="true" length="32" comment="Outcome"/>
+        <column xsi:type="text" name="outcome_detail" nullable="true" comment="Outcome Detail"/>
+        <column xsi:type="mediumtext" name="healed_diff" nullable="true" comment="Healed Code Diff"/>
+        <column xsi:type="mediumtext" name="fallback_html_returned" nullable="true" comment="Fallback HTML Returned"/>
         <column xsi:type="int" name="execution_time_ms" padding="10" unsigned="true" nullable="true" comment="Execution Time (ms)"/>
+        <column xsi:type="decimal" name="agent_duration_seconds" scale="3" precision="10" nullable="true" comment="Agent Duration Seconds"/>
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
-        
+
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
-        
+
         <index referenceId="AISELFHEALING_ATTEMPT_FINGERPRINT" indexType="btree">
             <column name="fingerprint"/>
         </index>
         <index referenceId="AISELFHEALING_ATTEMPT_STATUS" indexType="btree">
             <column name="status"/>
         </index>
+        <index referenceId="AISELFHEALING_ATTEMPT_OUTCOME" indexType="btree">
+            <column name="outcome"/>
+        </index>
         <index referenceId="AISELFHEALING_ATTEMPT_CREATED_AT" indexType="btree">
             <column name="created_at"/>
+        </index>
+    </table>
+
+    <table name="aiselfhealing_homepage_snapshot" resource="default" engine="innodb" comment="Homepage Snapshot Storage">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="int" name="store_id" padding="5" unsigned="true" nullable="false" comment="Store ID"/>
+        <column xsi:type="text" name="base_url" nullable="false" comment="Base URL"/>
+        <column xsi:type="mediumtext" name="full_html" nullable="true" comment="Full HTML"/>
+        <column xsi:type="mediumtext" name="inlined_css" nullable="true" comment="Inlined CSS"/>
+        <column xsi:type="int" name="http_status_code" padding="5" unsigned="true" nullable="true" comment="HTTP Status Code"/>
+        <column xsi:type="timestamp" name="captured_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Captured At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <index referenceId="AISELFHEALING_SNAPSHOT_STORE_ID" indexType="btree">
+            <column name="store_id"/>
         </index>
     </table>
 </schema>

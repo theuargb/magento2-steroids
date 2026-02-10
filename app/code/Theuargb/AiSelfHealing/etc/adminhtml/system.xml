@@ -9,7 +9,8 @@
             <label>AI Self-Healing</label>
             <tab>theuargb</tab>
             <resource>Theuargb_AiSelfHealing::config</resource>
-            
+
+            <!-- General -->
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Settings</label>
                 <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -19,95 +20,146 @@
                 <field id="mode" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Mode</label>
                     <source_model>Theuargb\AiSelfHealing\Model\Config\Source\Mode</source_model>
-                    <comment>monitor_only: Log errors without healing. auto_heal: Attempt to fix errors automatically.</comment>
+                    <comment>monitor_only: Log errors only. auto_heal: Attempt automatic fixes.</comment>
                 </field>
             </group>
-            
-            <group id="agent" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>AI Agent Settings</label>
-                <field id="endpoint_url" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Agent Endpoint URL</label>
-                    <comment>URL of the Python AI agent service (e.g., http://localhost:8100)</comment>
+
+            <!-- LLM Configuration -->
+            <group id="llm" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>LLM Configuration</label>
+                <field id="provider" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>LLM Provider</label>
+                    <source_model>Theuargb\AiSelfHealing\Model\Config\Source\LlmProvider</source_model>
+                    <comment>Select the AI provider. Use "OpenAI-Compatible" for self-hosted or proxy endpoints.</comment>
                 </field>
-                <field id="heal_timeout_seconds" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>API key for the selected LLM provider.</comment>
+                </field>
+                <field id="model" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Model</label>
+                    <comment>Model name, e.g. gpt-4o, claude-sonnet-4-20250514, etc.</comment>
+                </field>
+                <field id="base_url" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Base URL (optional)</label>
+                    <comment>For OpenAI-compatible proxies or self-hosted endpoints. Leave empty for default provider URL.</comment>
+                </field>
+            </group>
+
+            <!-- Agent Settings -->
+            <group id="agent" translate="label" type="text" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Agent Settings</label>
+                <field id="heal_timeout_seconds" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Heal Timeout (seconds)</label>
                     <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Max time for the healing agent loop. Default: 30.</comment>
                 </field>
-                <field id="fallback_timeout_seconds" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fallback_timeout_seconds" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Fallback Timeout (seconds)</label>
                     <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Max time to generate fallback HTML. Default: 15.</comment>
                 </field>
-                <field id="max_tool_calls" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Max Tool Calls</label>
+                <field id="max_tool_calls" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Tool Calls per Healing</label>
                     <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Limit the number of tool invocations per healing attempt. Default: 10.</comment>
                 </field>
             </group>
-            
+
+            <!-- URL Filters -->
             <group id="url_filters" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>URL Filters</label>
-                <field id="strategy" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="strategy" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Intercept Strategy</label>
                     <source_model>Theuargb\AiSelfHealing\Model\Config\Source\Strategy</source_model>
+                    <comment>all: intercept all URLs. patterns: only URLs matching patterns below. none: disabled.</comment>
                 </field>
                 <field id="patterns" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>URL Patterns to Include</label>
-                    <comment>One pattern per line. Supports wildcards (*). Only used when strategy is "patterns".</comment>
+                    <comment>One pattern per line. Supports wildcards (*). Used when strategy is "patterns".</comment>
                 </field>
                 <field id="exclude_patterns" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>URL Patterns to Exclude</label>
-                    <comment>One pattern per line. Supports wildcards (*). These are always excluded regardless of strategy.</comment>
+                    <comment>One pattern per line. Always excluded regardless of strategy.</comment>
+                </field>
+                <field id="url_rules" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>URL Rules with Custom AI Prompts</label>
+                    <frontend_model>Theuargb\AiSelfHealing\Block\Adminhtml\System\Config\UrlRules</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <comment><![CDATA[
+                        Define URL-specific rules with custom AI prompt context.<br/>
+                        <b>Pattern</b>: URL pattern (e.g. /checkout/*, /catalog/product/view/*).<br/>
+                        <b>Custom AI Prompt</b>: Additional instructions for the AI when this URL fails 
+                        (e.g. "On checkout, the AI may clear quote caches but must NOT modify payment data or skip validation").<br/>
+                        <b>Allow Fallback HTML</b>: 1 = yes, 0 = no.<br/>
+                        <b>Enabled</b>: 1 = active, 0 = inactive.
+                    ]]></comment>
                 </field>
             </group>
-            
+
+            <!-- Response Rewriting -->
             <group id="response_rewrite" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Response Rewriting</label>
-                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Response Rewriting (Fallback HTML)</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Response Rewriting</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>When enabled, the AI can rewrite the response HTML instead of showing an error.</comment>
+                    <comment>When enabled, the AI can generate fallback HTML instead of showing an error page.</comment>
                 </field>
                 <field id="allowed_url_patterns" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Allowed URL Patterns</label>
-                    <comment>One pattern per line. If empty, all URLs are allowed.</comment>
+                    <label>Allowed URL Patterns for Rewrite</label>
+                    <comment>One pattern per line. If empty, all URLs are allowed for rewrite.</comment>
                 </field>
-                <field id="http_status_code" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>HTTP Status Code</label>
+                <field id="http_status_code" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Fallback HTTP Status Code</label>
                     <validate>validate-number</validate>
+                    <comment>HTTP status code for fallback responses. Default: 200.</comment>
                 </field>
             </group>
-            
-            <group id="snapshot" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+
+            <!-- Homepage Snapshot -->
+            <group id="snapshot" translate="label" sortOrder="50" showInDefault="1">
                 <label>Homepage Snapshot</label>
-                <field id="cron_frequency" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cron Frequency</label>
-                    <source_model>Theuargb\AiSelfHealing\Model\Config\Source\CronFrequency</source_model>
+                <field id="cron_frequency" translate="label" type="select" sortOrder="10" showInDefault="1">
+                    <label>Snapshot Frequency</label>
+                    <source_model>Theuargb\AiSelfHealing\Model\Config\Source\SnapshotFrequency</source_model>
+                    <backend_model>Theuargb\AiSelfHealing\Model\Config\Backend\SnapshotCron</backend_model>
+                    <comment>How often to capture a snapshot of the homepage for fallback reference.</comment>
                 </field>
-                <field id="cron_expression" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="cron_expression" translate="label comment" type="text" sortOrder="15" showInDefault="1">
                     <label>Custom Cron Expression</label>
-                    <comment>Only used when frequency is set to "custom"</comment>
+                    <comment>Only used when frequency is set to "custom".</comment>
+                </field>
+                <field id="capture_now" translate="label" type="button" sortOrder="20" showInDefault="1">
+                    <label>Capture Snapshot Now</label>
+                    <frontend_model>Theuargb\AiSelfHealing\Block\Adminhtml\System\Config\CaptureButton</frontend_model>
                 </field>
             </group>
-            
-            <group id="safety" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Safety Settings</label>
-                <field id="max_attempts_per_fingerprint_per_hour" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Max Attempts Per Fingerprint Per Hour</label>
+
+            <!-- Safety & Limits -->
+            <group id="safety" translate="label" sortOrder="60" showInDefault="1">
+                <label>Safety &amp; Limits</label>
+                <field id="max_attempts_per_fingerprint_per_hour" translate="label comment" type="text" sortOrder="10" showInDefault="1">
+                    <label>Max Healing Attempts per Error Fingerprint per Hour</label>
                     <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Circuit breaker: stops retrying the same error. Default: 3.</comment>
                 </field>
-                <field id="max_concurrent_healings" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Max Concurrent Healings</label>
+                <field id="max_concurrent_healings" translate="label comment" type="text" sortOrder="20" showInDefault="1">
+                    <label>Max Concurrent Healing Requests</label>
                     <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Prevents stampede. Default: 2.</comment>
                 </field>
-                <field id="disallowed_tool_actions" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Disallowed Tool Actions</label>
-                    <comment>Comma-separated list of tool actions the AI is not allowed to perform.</comment>
+                <field id="disallowed_tool_actions" translate="label comment" type="textarea" sortOrder="30" showInDefault="1">
+                    <label>Disallowed Agent Tool Actions</label>
+                    <comment>One per line. E.g.: write_file, magento_cli, eval_php</comment>
                 </field>
-                <field id="readonly_mode" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Read-Only Mode</label>
+                <field id="readonly_mode" translate="label comment" type="select" sortOrder="40" showInDefault="1">
+                    <label>Read-Only Agent Mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>When enabled, the AI can only read data, not modify anything.</comment>
+                    <comment>Agent can only diagnose and clear caches — no file writes or CLI commands.</comment>
                 </field>
             </group>
+
         </section>
     </system>
 </config>

@@ -1,0 +1,59 @@
+{
+    "aiselfhealing_attempt": {
+        "column": {
+            "entity_id": true,
+            "fingerprint": true,
+            "url": true,
+            "request_method": true,
+            "exception_class": true,
+            "error_message": true,
+            "exception_file": true,
+            "exception_line": true,
+            "error_trace": true,
+            "context_snapshot": true,
+            "url_rule_prompt": true,
+            "agent_request": true,
+            "agent_response": true,
+            "agent_reasoning_log": true,
+            "agent_actions_taken_json": true,
+            "agent_tool_calls_count": true,
+            "llm_model_used": true,
+            "llm_tokens_used": true,
+            "status": true,
+            "outcome": true,
+            "outcome_detail": true,
+            "healed_diff": true,
+            "fallback_html_returned": true,
+            "execution_time_ms": true,
+            "agent_duration_seconds": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AISELFHEALING_ATTEMPT_FINGERPRINT": true,
+            "AISELFHEALING_ATTEMPT_STATUS": true,
+            "AISELFHEALING_ATTEMPT_OUTCOME": true,
+            "AISELFHEALING_ATTEMPT_CREATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "aiselfhealing_homepage_snapshot": {
+        "column": {
+            "entity_id": true,
+            "store_id": true,
+            "base_url": true,
+            "full_html": true,
+            "inlined_css": true,
+            "http_status_code": true,
+            "captured_at": true
+        },
+        "index": {
+            "AISELFHEALING_SNAPSHOT_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

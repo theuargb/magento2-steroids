@@ -23,22 +23,40 @@
             <group id="llm" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>LLM Configuration</label>
                 <field id="provider" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>LLM Provider</label>
+                    <label>LLM Preset</label>
                     <source_model>Theuargb\Steroids\Model\Config\Source\LlmProvider</source_model>
-                    <comment>Select the AI provider. "OpenAI Realtime" uses WebSocket for lower-latency inference. Use "OpenAI-Compatible" for self-hosted or proxy endpoints.</comment>
+                    <comment><![CDATA[
+                        Select a pre-configured LLM preset or choose <b>Custom</b> to configure provider, model and base URL manually.<br/>
+                        Presets: <b>OpenAI Realtime</b> (gpt-4o-realtime-preview, WebSocket), <b>OpenAI GPT-5</b> (gpt-5),
+                        <b>Anthropic Haiku 4.5</b> (claude-haiku-4-5-20250514), <b>Google Gemini 3 Flash</b> (gemini-3.0-flash via OpenAI-compatible API).
+                    ]]></comment>
                 </field>
                 <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API Key</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     <comment>API key for the selected LLM provider.</comment>
                 </field>
+                <field id="custom_provider" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Provider Type</label>
+                    <source_model>Theuargb\Steroids\Model\Config\Source\CustomProviderType</source_model>
+                    <comment>Select the underlying AI provider type for your custom configuration.</comment>
+                    <depends>
+                        <field id="provider">custom</field>
+                    </depends>
+                </field>
                 <field id="model" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Model</label>
                     <comment>Model name, e.g. gpt-4o, claude-sonnet-4-20250514, gpt-4o-realtime-preview, etc.</comment>
+                    <depends>
+                        <field id="provider">custom</field>
+                    </depends>
                 </field>
                 <field id="base_url" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Custom Base URL (optional)</label>
                     <comment>For OpenAI-compatible proxies or self-hosted endpoints. Leave empty for default provider URL.</comment>
+                    <depends>
+                        <field id="provider">custom</field>
+                    </depends>
                 </field>
             </group>
 
@@ -92,10 +110,10 @@
             <group id="design" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Fallback Page Design</label>
                 <field id="design_json" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Design JSON</label>
+                    <label>Design / Branding JSON</label>
                     <comment><![CDATA[
                         Free-form JSON describing the store's visual design for fallback pages.<br/>
-                        Generate this by taking a screenshot of your homepage and asking ChatGPT to extract a design description as JSON.<br/>
+                        You can populate this manually, or use the Firecrawl scraper below to extract branding automatically.<br/>
                         Example structure (any shape is accepted — the AI will interpret it):<br/>
                         <pre>{
   "store_name": "My Store",
@@ -112,6 +130,19 @@
   "style_notes": "Modern, clean, rounded corners, subtle shadows"
 }</pre>
                     ]]></comment>
+                </field>
+                <field id="firecrawl_api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Firecrawl API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[API key for <a href="https://firecrawl.dev" target="_blank">Firecrawl</a> branding extraction service. Used only for manual "Scrape Branding" action.]]></comment>
+                </field>
+                <field id="firecrawl_store_url" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Store URL to Scrape</label>
+                    <comment>The store homepage URL that Firecrawl will analyze for branding extraction. Editable — defaults to your store's base URL.</comment>
+                </field>
+                <field id="scrape_branding" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label></label>
+                    <frontend_model>Theuargb\Steroids\Block\Adminhtml\System\Config\ScrapeBranding</frontend_model>
                 </field>
             </group>
 

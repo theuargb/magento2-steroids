@@ -69,4 +69,9 @@
             <argument name="logger" xsi:type="object">Theuargb\Steroids\Logger\Logger</argument>
         </arguments>
     </type>
+    <type name="Theuargb\Steroids\Controller\Adminhtml\Branding\Scrape">
+        <arguments>
+            <argument name="logger" xsi:type="object">Theuargb\Steroids\Logger\Logger</argument>
+        </arguments>
+    </type>
 </config>

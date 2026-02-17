@@ -7,8 +7,9 @@
                 <enabled>0</enabled>
             </general>
             <llm>
-                <provider>openai</provider>
+                <provider>openai_gpt5</provider>
                 <api_key/>
+                <custom_provider>openai</custom_provider>
                 <model>gpt-4o</model>
                 <base_url/>
             </llm>
@@ -23,6 +24,8 @@
             </url_filters>
             <design>
                 <design_json/>
+                <firecrawl_api_key/>
+                <firecrawl_store_url/>
             </design>
             <safety>
                 <max_attempts_per_fingerprint_per_hour>3</max_attempts_per_fingerprint_per_hour>

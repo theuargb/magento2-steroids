@@ -1,0 +1,94 @@
+<?php
+/**
+ * @var \Theuargb\Steroids\Block\Adminhtml\System\Config\ScrapeBranding $block
+ */
+$ajaxUrl = $block->getAjaxUrl();
+?>
+<div id="steroids-scrape-branding-container" style="margin: 6px 0;">
+    <button id="steroids-scrape-branding-btn"
+            type="button"
+            class="action-default scalable"
+            title="<?= $block->escapeHtmlAttr(__('Scrape Branding')) ?>">
+        <span><?= $block->escapeHtml(__('Scrape Branding')) ?></span>
+    </button>
+    <span id="steroids-scrape-status" style="margin-left: 12px; display: none;"></span>
+</div>
+
+<script>
+require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
+    'use strict';
+
+    var btn       = $('#steroids-scrape-branding-btn'),
+        statusEl  = $('#steroids-scrape-status'),
+        ajaxUrl   = '<?= /** @noEscape */ $ajaxUrl ?>';
+
+    /**
+     * Read the current value from a system-config field.
+     * Magento renders ids like: steroids_design_firecrawl_api_key
+     */
+    function getFieldValue(groupField) {
+        var el = $('input[id$="' + groupField + '"], textarea[id$="' + groupField + '"], select[id$="' + groupField + '"]').first();
+        return el.length ? el.val() : '';
+    }
+
+    /**
+     * Set the Design JSON textarea value.
+     */
+    function setDesignJson(json) {
+        var textarea = $('[id$="design_design_json"]');
+        if (textarea.length) {
+            textarea.val(json).trigger('change');
+        }
+    }
+
+    btn.on('click', function () {
+        var apiKey   = getFieldValue('design_firecrawl_api_key'),
+            storeUrl = getFieldValue('design_firecrawl_store_url'),
+            useSavedKey = false;
+
+        // Obscure fields show placeholder asterisks for saved encrypted values
+        if (!apiKey || /^\*+$/.test(apiKey)) {
+            // Key was previously saved — tell the backend to read it from config
+            useSavedKey = true;
+        }
+        if (!storeUrl) {
+            alert({content: 'Please enter a Store URL to scrape.'});
+            return;
+        }
+
+        btn.prop('disabled', true).addClass('disabled');
+        statusEl.show().text('Scraping branding from ' + storeUrl + ' …').css('color', '#666');
+
+        var postData = {
+            form_key: FORM_KEY,
+            store_url: storeUrl,
+            use_saved_key: useSavedKey ? '1' : '0'
+        };
+        if (!useSavedKey) {
+            postData.firecrawl_api_key = apiKey;
+        }
+
+        $.ajax({
+            url: ajaxUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: postData,
+            success: function (response) {
+                btn.prop('disabled', false).removeClass('disabled');
+                if (response.success && response.branding) {
+                    var pretty = JSON.stringify(response.branding, null, 2);
+                    setDesignJson(pretty);
+                    statusEl.text('Branding extracted successfully and populated into Design JSON.').css('color', '#006400');
+                } else {
+                    var msg = response.message || 'Unknown error during scraping.';
+                    statusEl.text('Error: ' + msg).css('color', '#cc0000');
+                }
+            },
+            error: function (xhr) {
+                btn.prop('disabled', false).removeClass('disabled');
+                statusEl.text('Request failed: ' + (xhr.statusText || 'network error')).css('color', '#cc0000');
+            }
+        });
+    });
+});
+</script>
